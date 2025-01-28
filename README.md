@@ -1,0 +1,97 @@
+# dbg-rs 🦀
+
+![Rust](https://img.shields.io/badge/made%20with-Rust-red)
+![crate](https://img.shields.io/crates/v/dbg-rs.svg)
+![docs](https://docs.rs/dbg-rs/badge.svg)
+![Forks](https://img.shields.io/github/forks/joaoviictorti/dbg-rs)
+![Stars](https://img.shields.io/github/stars/joaoviictorti/dbg-rs)
+![License](https://img.shields.io/github/license/joaoviictorti/dbg-rs)
+
+Safe Rust bindings for the COM interfaces of the Windows debugging engine.
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+    - [Logging to the Debugger](#logging-to-the-debugger)
+    - [Executing Commands](#executing-commands)
+    - [Reading Virtual Memory](#reading-virtual-memory)
+- [Contributing to dbg-rs](#contributing-to-dbg-rs)
+- [License](#license)
+
+## Features
+
+- ✅ Safe Rust bindings for Windows debugging interfaces.
+- ✅ Easy-to-use macros for logging to the debugger.
+- ✅ Abstractions for managing symbols, memory, and CPU registers.
+- ✅ Works seamlessly with the Windows COM-based debugging system.
+
+## Installation
+
+Add `dbg` to your project by updating your `Cargo.toml`:
+```bash
+cargo add dbg-rs
+```
+
+Or manually add the dependency:
+```toml
+[dependencies]
+dbg-rs = "<version>"
+```
+
+## Usage
+
+The `dbg-rs` library provides utilities to interact with the Windows debugging engine, such as executing commands, logging messages, and inspecting debug symbols. Below are some common use cases:
+
+### Logging to the Debugger
+
+Use the `dprintln!` macro to send formatted messages to the debugger output:
+
+```rs
+use dbg_rs::dprintln;
+
+// Example usage
+dprintln!(dbg, "Hello, {}!", "Debugger");
+dprintln!(dbg, "Number: {}", 42);
+```
+
+### Executing Commands
+
+Running commands in the debugger:
+
+```rs
+use dbg_rs::Dbg;
+
+dbg.exec(".echo Hello, Debugger!")?;
+```
+
+### Reading Virtual Memory
+
+Access specific regions of the debugged process's memory:
+
+```rs
+use dbg_rs::Dbg;
+
+let mut buffer = vec![0u8; 128];
+dbg.read_vaddr(0x7FFEBEEF0000, &mut buffer)?;
+println!("Read memory: {:?}", &buffer[..16]); // Print first 16 bytes
+```
+
+For more examples, including a WinDbg extension that lists loaded modules, see the [`examples`](./examples) folder in this repository. 📂
+
+## Contributing to dbg-rs
+
+To contribute to **dbg-rs**, follow these steps:
+
+1. Fork this repository.
+2. Create a branch: `git checkout -b <branch_name>`.
+3. Make your changes and commit them: `git commit -m '<commit_message>'`.
+4. Push your changes to your branch: `git push origin <branch_name>`.
+5. Create a pull request.
+
+Alternatively, consult the [GitHub documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests) on how to create a pull request.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](/LICENSE) file for details.
