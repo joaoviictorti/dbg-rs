@@ -7,7 +7,8 @@ use windows::{
 
 /// Macro to send formatted messages to the debugger using [`Dbg::println`].
 ///
-/// # Exemplos:
+/// # Examples
+/// 
 /// ```rust,ignore
 /// dprintln!(dbg, "Hello, {}!", "Debugger");
 /// dprintln!(dbg, "This is a number: {}", 42);
@@ -26,6 +27,7 @@ macro_rules! dprintln {
 /// Macro to send formatted messages to the debugger using [`Dbg::print`]
 ///  
 /// # Examples
+/// 
 /// ```rust,ignore
 /// dprint!(dbg, "Hello, {}!", "Debugger");
 /// dprint!(dbg, "This is a number: {}", 42);
