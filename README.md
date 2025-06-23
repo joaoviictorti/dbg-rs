@@ -34,12 +34,6 @@ Add `dbg` to your project by updating your `Cargo.toml`:
 cargo add dbg-rs
 ```
 
-Or manually add the dependency:
-```toml
-[dependencies]
-dbg-rs = "<version>"
-```
-
 ## Usage
 
 The `dbg-rs` library provides utilities to interact with the Windows debugging engine, such as executing commands, logging messages, and inspecting debug symbols. Below are some common use cases:
