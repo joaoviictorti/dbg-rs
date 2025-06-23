@@ -1,7 +1,7 @@
 [package]
 name = "dbg-rs"
 version = "0.1.1"
-edition = "2021"
+edition = "2024"
 description = "Safe Rust bindings for the COM interfaces of the Windows debugging engine"
 license = "MIT"
 repository = "https://github.com/joaoviictorti/dbg"
@@ -9,10 +9,11 @@ homepage = "https://github.com/joaoviictorti/dbg"
 readme = "README.md"
 keywords = ["windows", "rust", "dbgeng", "binding"]
 categories = ["api-bindings"]
-exclude = [
-    ".gitignore",
-    "target/",
-    "/examples"
+include = [
+    "src/**",
+    "Cargo.toml",
+    "README.md",
+    "LICENSE",
 ]
 
 [dependencies]
