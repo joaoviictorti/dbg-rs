@@ -61,7 +61,9 @@ dbg.read_vaddr(0x7FFEBEEF0000, &mut buffer)?;
 println!("Read memory: {:?}", &buffer[..16]); // Print first 16 bytes
 ```
 
-For more examples, including a WinDbg extension that lists loaded modules, see the [`examples`](./examples) folder in this repository. 📂
+## Additional Resources
+
+For more examples, check the [examples](/examples) folder in the repository.
 
 ## License
 
