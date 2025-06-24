@@ -74,18 +74,6 @@ println!("Read memory: {:?}", &buffer[..16]); // Print first 16 bytes
 
 For more examples, including a WinDbg extension that lists loaded modules, see the [`examples`](./examples) folder in this repository. 📂
 
-## Contributing to dbg-rs
-
-To contribute to **dbg-rs**, follow these steps:
-
-1. Fork this repository.
-2. Create a branch: `git checkout -b <branch_name>`.
-3. Make your changes and commit them: `git commit -m '<commit_message>'`.
-4. Push your changes to your branch: `git push origin <branch_name>`.
-5. Create a pull request.
-
-Alternatively, consult the [GitHub documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests) on how to create a pull request.
-
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](/LICENSE) file for details.
