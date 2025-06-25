@@ -37,9 +37,9 @@ pub enum DbgError {
     InvalidString(#[from] std::ffi::NulError),
 
     /// Represents I/O-related errors, like reading or writing files.
-    /// 
+    ///
     /// Arguments:
-    /// 
+    ///
     /// * `{0}` - A std::io::Error describing the issue.
     #[error("{0}")]
     IoError(#[from] std::io::Error),

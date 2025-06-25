@@ -8,7 +8,7 @@ use windows::{
 /// Macro to send formatted messages to the debugger using [`Dbg::println`].
 ///
 /// # Examples
-/// 
+///
 /// ```rust,ignore
 /// dprintln!(dbg, "Hello, {}!", "Debugger");
 /// dprintln!(dbg, "This is a number: {}", 42);
@@ -27,7 +27,7 @@ macro_rules! dprintln {
 /// Macro to send formatted messages to the debugger using [`Dbg::print`]
 ///  
 /// # Examples
-/// 
+///
 /// ```rust,ignore
 /// dprint!(dbg, "Hello, {}!", "Debugger");
 /// dprint!(dbg, "This is a number: {}", 42);
@@ -44,7 +44,7 @@ macro_rules! dprint {
     };
 }
 
-/// Represents a debugging interface that allows execution of commands, 
+/// Represents a debugging interface that allows execution of commands,
 /// querying and managing debug symbols, inspecting memory, and interacting with registers.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Dbg {
@@ -58,7 +58,7 @@ pub struct Dbg {
     pub dataspaces: IDebugDataSpaces4,
 
     /// An interface to query and manipulate CPU registers in the debugged target.
-    pub registers: IDebugRegisters
+    pub registers: IDebugRegisters,
 }
 
 impl Dbg {
@@ -72,9 +72,9 @@ impl Dbg {
     ///
     /// * `Ok(Self)` - If all required interfaces are successfully obtained.
     /// * `Err(DbgError)` - If the cast fails.
-    /// 
+    ///
     /// # Example
-    /// 
+    ///
     /// ```rust,ignore
     /// let client = /* Obtain an instance of IDebugClient */;
     /// let dbg = Dbg::new(client)?;
@@ -85,19 +85,19 @@ impl Dbg {
             control: client.cast()?,
             symbols: client.cast()?,
             dataspaces: client.cast()?,
-            registers: client.cast()?
+            registers: client.cast()?,
         })
     }
-    
+
     /// Creates a new debugger instance of the specified type.
     ///
     /// # Returns
     ///
     /// * `Ok(T)` - A new debugger instance of the specified type.
     /// * `Err(DbgError)` - If the debugger instance cannot be created or initialization fails.
-    /// 
+    ///
     /// # Example
-    /// 
+    ///
     /// ```rust,ignore
     /// let client = create_debug::<IDebugClient>()?;
     /// ```
@@ -128,11 +128,9 @@ impl Dbg {
     {
         let cstr = CString::new(command.into())?;
         unsafe {
-            Ok(self.control.Execute(
-                DEBUG_OUTCTL_ALL_CLIENTS,
-                PCSTR(cstr.as_ptr().cast()),
-                DEBUG_EXECUTE_DEFAULT,
-            )?)
+            Ok(self
+                .control
+                .Execute(DEBUG_OUTCTL_ALL_CLIENTS, PCSTR(cstr.as_ptr().cast()), DEBUG_EXECUTE_DEFAULT)?)
         }
     }
 
@@ -174,10 +172,7 @@ impl Dbg {
     {
         if let Err(err) = self.output(DEBUG_OUTPUT_NORMAL, args) {
             // If it fails, it sends the error directly to the debugger as an error message.
-            let _ = self.output(
-                DEBUG_OUTPUT_ERROR,
-                format!("Failed to log message: {:?}", err),
-            );
+            let _ = self.output(DEBUG_OUTPUT_ERROR, format!("Failed to log message: {:?}", err));
         }
     }
 
@@ -200,10 +195,7 @@ impl Dbg {
     {
         if let Err(err) = self.output(DEBUG_OUTPUT_NORMAL, format!("{}\n", args.into())) {
             // If it fails, it sends the error directly to the debugger as an error message.
-            let _ = self.output(
-                DEBUG_OUTPUT_ERROR,
-                format!("Failed to log message: {:?}", err),
-            );
+            let _ = self.output(DEBUG_OUTPUT_ERROR, format!("Failed to log message: {:?}", err));
         }
     }
 
@@ -245,7 +237,7 @@ impl Dbg {
     /// * `Err(DbgError)` - If the evaluation fails (e.g., invalid expression or type mismatch).
     ///
     /// # Example
-    /// 
+    ///
     /// ```rust,ignore
     /// let result = dbg.eval::<u64>("0x200 + 0x300")?;
     /// ```
@@ -256,12 +248,8 @@ impl Dbg {
         let cstr = CString::new(expr)?;
         let mut value = DEBUG_VALUE::default();
         unsafe {
-            self.control.Evaluate(
-                PCSTR(cstr.as_ptr().cast()), 
-                T::VALUE_TYPE, 
-                &mut value, 
-                None
-            )?;
+            self.control
+                .Evaluate(PCSTR(cstr.as_ptr().cast()), T::VALUE_TYPE, &mut value, None)?;
         }
 
         Ok(T::from_debug_value(&value))
@@ -277,7 +265,7 @@ impl Dbg {
     ///
     /// * `Ok(u64)` - The address of the symbol.
     /// * `Err(DbgError)` - If the operation fails.
-    /// 
+    ///
     /// # Example
     ///
     /// ```rust ignore
@@ -292,7 +280,7 @@ impl Dbg {
     }
 
     /// Resolves a symbol name from a given address.
-    /// 
+    ///
     /// # Arguments
     ///
     /// * `addr` - The address to resolve to a symbol name.
@@ -303,7 +291,7 @@ impl Dbg {
     /// * `Err(DbgError)` - If the operation fails (e.g., invalid address or debugger error).
     ///
     /// # Example
-    /// 
+    ///
     /// ```rust ignore
     /// dbg.get_symbol_name(0x7FFF_FFFF_0000)?;
     /// ```
@@ -312,17 +300,12 @@ impl Dbg {
         let mut buffer = vec![0u8; 1024];
         let mut size = 0u32;
         unsafe {
-            self.symbols.GetNameByOffset(
-                addr, 
-                Some(&mut buffer), 
-                Some(&mut size), 
-                None
-            )?;
+            self.symbols.GetNameByOffset(addr, Some(&mut buffer), Some(&mut size), None)?;
         }
-        
+
         // Check if the size of the symbol name is zero (indicating failure)
         if size == 0 {
-            return Err(DbgError::InvalidSize(size as usize))
+            return Err(DbgError::InvalidSize(size as usize));
         }
 
         // Resize the buffer to match the actual size of the symbol name
@@ -346,38 +329,34 @@ impl Dbg {
     /// * `Err(DbgError)` - If the removal fails.
     ///
     /// # Example
-    /// 
+    ///
     /// ```rust,ignore
     /// dbg.remove_synthetic_module(0x7FFF_FFFF_0000)?; // Remove by address
     /// dbg.remove_synthetic_module("example.dll")?; // Remove by name
     /// ```
-    pub fn remove_synthetic_module<T>(&self, module: T) -> Result<(), DbgError> 
-    where 
-        T: Into<Module>
+    pub fn remove_synthetic_module<T>(&self, module: T) -> Result<(), DbgError>
+    where
+        T: Into<Module>,
     {
         match module.into() {
             Module::Address(base) => {
                 // Remove the module by address
                 unsafe { self.symbols.RemoveSyntheticModule(base)? }
-            },
+            }
             Module::Name(name) => {
                 let mut base = 0;
                 let cstr = CString::new(name)?;
                 unsafe {
                     // Resolve the address by name
-                    self.symbols.GetModuleByModuleName(
-                        PCSTR(cstr.as_ptr().cast()), 
-                        0, 
-                        None, 
-                        Some(&mut base)
-                    )?;
+                    self.symbols
+                        .GetModuleByModuleName(PCSTR(cstr.as_ptr().cast()), 0, None, Some(&mut base))?;
 
                     // Remove the module by address
-                    self.symbols.RemoveSyntheticModule(base)? 
+                    self.symbols.RemoveSyntheticModule(base)?
                 }
             }
         }
-    
+
         Ok(())
     }
 
@@ -392,7 +371,7 @@ impl Dbg {
     ///
     /// * `Ok(usize)` - The number of bytes successfully read.
     /// * `Err(DbgError)` - If the operation fails.
-    /// 
+    ///
     /// # Example
     ///
     /// ```rust,ignore
@@ -402,33 +381,29 @@ impl Dbg {
     pub fn read_vaddr(&self, vaddr: u64, buffer: &mut [u8]) -> Result<usize, DbgError> {
         let mut bytes_read = 0;
         unsafe {
-            self.dataspaces.ReadVirtual(
-                vaddr, 
-                buffer.as_mut_ptr().cast(), 
-                buffer.len()as u32, 
-                Some(&mut bytes_read)
-            )?;
+            self.dataspaces
+                .ReadVirtual(vaddr, buffer.as_mut_ptr().cast(), buffer.len() as u32, Some(&mut bytes_read))?;
         }
 
         Ok(bytes_read as usize)
     }
 
     /// Adds a synthetic module to the debugger's symbol table.
-    /// 
+    ///
     /// # Arguments
     ///
     /// * `expr` - The expression used to compute the base address of the synthetic module.
     /// * `size` - The size of the synthetic module in bytes.
     /// * `name` - The name of the synthetic module. It must implement `Into<String>`.
     /// * `path` - The file path of the synthetic module. It must be a valid `PathBuf`.
-    /// 
+    ///
     /// # Returns
     ///
     /// * `Ok(())` - If the synthetic module is successfully added.
     /// * `Err(DbgError)` - If any error occurs during the evaluation, path resolution, or name conversion.
     pub fn add_synthetic_module<S>(&self, expr: S, size: u32, name: S, path: PathBuf) -> Result<(), DbgError>
     where
-        S: Into<String>
+        S: Into<String>,
     {
         // Compute the base address of the synthetic module
         // This evaluates the provided expression to a 64-bit address
@@ -436,24 +411,25 @@ impl Dbg {
 
         // Convert the module name and image path into a CString
         let module_name = CString::new(name.into())?;
-        let image_path = path.canonicalize()?
+        let image_path = path
+            .canonicalize()?
             .to_str()
             .ok_or(DbgError::DbgGeneralError("Invalid Image Path"))
             .and_then(|s| Ok(CString::new(s)?))?;
 
         unsafe {
             self.symbols.AddSyntheticModule(
-                base, 
-                size, 
-                PCSTR(image_path.as_ptr().cast()), 
-                PCSTR(module_name.as_ptr().cast()), 
-                DEBUG_ADDSYNTHMOD_DEFAULT
+                base,
+                size,
+                PCSTR(image_path.as_ptr().cast()),
+                PCSTR(module_name.as_ptr().cast()),
+                DEBUG_ADDSYNTHMOD_DEFAULT,
             )?;
         }
 
         Ok(())
     }
-    
+
     /// Safely reads a value of a specified type from a given virtual memory address.
     ///
     /// # Arguments
@@ -499,7 +475,7 @@ impl Dbg {
     }
 
     /// Reads a null-terminated C string from a specific virtual memory address.
-    /// 
+    ///
     /// # Arguments
     ///
     /// * `addr` - The virtual memory address of the null-terminated string to read.
@@ -509,7 +485,7 @@ impl Dbg {
     /// * `Ok(String)` - The string read from the specified memory address, if successful.
     /// * `Err(DbgError)` - If the operation fails due to issues such as an invalid memory address or
     ///   a zero-sized string
-    /// 
+    ///
     /// # Example
     ///
     /// ```rust,ignore
@@ -521,17 +497,13 @@ impl Dbg {
         let mut buffer = vec![0u8; max_bytes];
         let mut size = 0;
         unsafe {
-            self.dataspaces.ReadMultiByteStringVirtual(
-                addr,
-                max_bytes as u32,
-                Some(&mut buffer),  
-                Some(&mut size)
-            )?;
+            self.dataspaces
+                .ReadMultiByteStringVirtual(addr, max_bytes as u32, Some(&mut buffer), Some(&mut size))?;
         }
 
         // Check if the size of the symbol name is zero (indicating failure)
         if size == 0 {
-            return Err(DbgError::InvalidSize(size as usize))
+            return Err(DbgError::InvalidSize(size as usize));
         }
 
         // Resize the buffer to match the actual size of the symbol name
@@ -542,7 +514,7 @@ impl Dbg {
     }
 
     /// Retrieves the register indices corresponding to a provided list of names.
-    /// 
+    ///
     /// # Arguments
     ///
     /// * `names` - A slice of string references (`&[&str]`) representing the names
@@ -552,7 +524,7 @@ impl Dbg {
     ///
     /// * `Ok(Vec<u32>)` - A vector of register indices if all names are resolved successfully.
     /// * `Err(DbgError)` - If any name fails to convert or resolve to an index.
-    /// 
+    ///
     /// # Example
     ///
     /// ```rust,ignore
@@ -560,14 +532,11 @@ impl Dbg {
     /// let indices = dbg.regs(&regs)?;
     /// ```
     pub fn reg_indices(&self, names: &[&str]) -> Result<Vec<u32>, DbgError> {
-        names.iter()
+        names
+            .iter()
             .map(|&n| {
                 let name = CString::new(n)?;
-                unsafe { 
-                    Ok(self.registers.GetIndexByName(
-                        PCSTR(name.as_ptr().cast())
-                    )?)
-                }
+                unsafe { Ok(self.registers.GetIndexByName(PCSTR(name.as_ptr().cast()))?) }
             })
             .collect()
     }
@@ -582,7 +551,7 @@ impl Dbg {
     ///
     /// * `Ok(Vec<DEBUG_VALUE>)` - A vector of `DEBUG_VALUE` instances containing the values of the registers.
     /// * `Err(DbgError)` - If the operation fails, such as when the indices are invalid or the API call fails.
-    /// 
+    ///
     /// # Example
     ///
     /// ```rust,ignore
@@ -592,12 +561,8 @@ impl Dbg {
     pub fn reg_values(&self, indices: &[u32]) -> Result<Vec<DEBUG_VALUE>, DbgError> {
         let mut values = Vec::with_capacity(indices.len());
         unsafe {
-            self.registers.GetValues(
-                indices.len() as u32, 
-                Some(indices.as_ptr()), 
-                0, 
-                values.as_mut_ptr()
-            )?;
+            self.registers
+                .GetValues(indices.len() as u32, Some(indices.as_ptr()), 0, values.as_mut_ptr())?;
         }
 
         Ok(values)
