@@ -9,17 +9,6 @@
 
 Safe Rust bindings for the COM interfaces of the Windows debugging engine.
 
-## Table of Contents
-
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-    - [Logging to the Debugger](#logging-to-the-debugger)
-    - [Executing Commands](#executing-commands)
-    - [Reading Virtual Memory](#reading-virtual-memory)
-- [Contributing to dbg-rs](#contributing-to-dbg-rs)
-- [License](#license)
-
 ## Features
 
 - ✅ Safe Rust bindings for Windows debugging interfaces.
@@ -27,7 +16,7 @@ Safe Rust bindings for the COM interfaces of the Windows debugging engine.
 - ✅ Abstractions for managing symbols, memory, and CPU registers.
 - ✅ Works seamlessly with the Windows COM-based debugging system.
 
-## Installation
+## Getting started
 
 Add `dbg` to your project by updating your `Cargo.toml`:
 ```bash
@@ -72,7 +61,9 @@ dbg.read_vaddr(0x7FFEBEEF0000, &mut buffer)?;
 println!("Read memory: {:?}", &buffer[..16]); // Print first 16 bytes
 ```
 
-For more examples, including a WinDbg extension that lists loaded modules, see the [`examples`](./examples) folder in this repository. 📂
+## Additional Resources
+
+For more examples, check the [examples](/examples) folder in the repository.
 
 ## License
 
