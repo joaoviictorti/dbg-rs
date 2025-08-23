@@ -14,34 +14,26 @@
 //! ```no_run
 //! use dbg_rs::dprintln;
 //!
-//! fn main() {
-//!     dprintln!(dbg, "Hello, {}!", "Debugger");
-//!     dprintln!(dbg, "Number: {}", 42);
-//! }
+//! dprintln!(dbg, "Hello, {}!", "Debugger");
+//! dprintln!(dbg, "Number: {}", 42);
 //! ```
 //!
 //! ### Executing Commands
 //! ```no_run
 //! use dbg_rs::Dbg;
 //!
-//! fn main() -> Result<(), Box<dyn std::error::Error>> {
-//!     let dbg = Dbg::new()?;
-//!     dbg.exec(".echo Hello, Debugger!")?;
-//!     Ok(())
-//! }
+//! let dbg = Dbg::new()?;
+//! dbg.exec(".echo Hello, Debugger!")?;
 //! ```
 //!
 //! ### Reading Virtual Memory
 //! ```no_run
 //! use dbg_rs::Dbg;
 //!
-//! fn main() -> Result<(), Box<dyn std::error::Error>> {
-//!     let dbg = Dbg::new()?;
-//!     let mut buffer = vec![0u8; 128];
-//!     dbg.read_vaddr(0x7FFEBEEF0000, &mut buffer)?;
-//!     println!("Read memory: {:?}", &buffer[..16]);
-//!     Ok(())
-//! }
+//! let dbg = Dbg::new()?;
+//! let mut buffer = vec![0u8; 128];
+//! dbg.read_vaddr(0x7FFEBEEF0000, &mut buffer)?;
+//! println!("Read memory: {:?}", &buffer[..16]);
 //! ```
 //!
 //! # More Information
