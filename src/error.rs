@@ -1,3 +1,5 @@
+//! The `error` module defines error types used throughout the library.
+
 use thiserror::Error;
 
 /// Represents errors that can occur during debugging or low-level operations involving
