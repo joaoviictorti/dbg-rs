@@ -1,11 +1,12 @@
 [package]
 name = "dbg-rs"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2024"
 description = "Safe Rust bindings for the COM interfaces of the Windows debugging engine"
 license = "MIT"
 repository = "https://github.com/joaoviictorti/dbg"
 homepage = "https://github.com/joaoviictorti/dbg"
+documentation = "https://docs.rs/dbg/latest"
 readme = "README.md"
 keywords = ["windows", "rust", "dbgeng", "binding"]
 categories = ["api-bindings"]

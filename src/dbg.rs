@@ -68,11 +68,6 @@ impl Dbg {
     ///
     /// * `client` - A COM interface representing the debugging client.
     ///
-    /// # Returns
-    ///
-    /// * `Ok(Self)` - If all required interfaces are successfully obtained.
-    /// * `Err(DbgError)` - If the cast fails.
-    ///
     /// # Example
     ///
     /// ```rust,ignore
@@ -91,11 +86,6 @@ impl Dbg {
 
     /// Creates a new debugger instance of the specified type.
     ///
-    /// # Returns
-    ///
-    /// * `Ok(T)` - A new debugger instance of the specified type.
-    /// * `Err(DbgError)` - If the debugger instance cannot be created or initialization fails.
-    ///
     /// # Example
     ///
     /// ```rust,ignore
@@ -111,11 +101,6 @@ impl Dbg {
     /// # Arguments
     ///
     /// * `command` - The command to execute, provided as a string.
-    ///
-    /// # Returns
-    ///
-    /// * `Ok(())` - If the command is executed successfully.
-    /// * `Err(DbgError)` - If the execution fails.
     ///
     /// # Example
     ///
@@ -140,11 +125,6 @@ impl Dbg {
     ///
     /// * `mask` - The output mask defining the message type (e.g., normal, error).
     /// * `str` - The message to send.
-    ///
-    /// # Returns
-    ///
-    /// * `Ok(())` - If the message is sent successfully.
-    /// * `Err(DbgError)` - If the operation fails.
     fn output<S>(&self, mask: u32, str: S) -> Result<(), DbgError>
     where
         S: Into<String>,
@@ -200,24 +180,12 @@ impl Dbg {
     }
 
     /// Retrieves the number of processors in the target system.
-    ///
-    /// # Returns
-    ///
-    /// * `Ok(u32)` - The number of processors in the target system.
-    /// * `Err(DbgError)` - If the operation fails
     #[inline(always)]
     pub fn num_processors(&self) -> Result<u32, DbgError> {
         unsafe { Ok(self.control.GetNumberProcessors()?) }
     }
 
     /// Retrieves the type of the debugged system.
-    ///
-    /// # Returns
-    ///
-    /// * `Ok((u32, u32))` - A tuple containing:
-    ///     - `class`: The debuggee class (e.g., [`DEBUG_CLASS_KERNEL`] or [`DEBUG_CLASS_USER_WINDOWS`]).
-    ///     - `qualifier`: The debuggee qualifier, providing additional details about the debuggee type.
-    /// * `Err(DbgError)` - If the operation fails.
     pub fn debug_type(&self) -> Result<(u32, u32), DbgError> {
         let (mut class, mut qualifier) = (0, 0);
         unsafe { self.control.GetDebuggeeType(&mut class, &mut qualifier)? };
@@ -230,11 +198,6 @@ impl Dbg {
     /// # Arguments
     ///
     /// * `expr` - The expression to be executed.
-    ///
-    /// # Returns
-    ///
-    /// * `Ok(T)` - The result of the evaluation, converted to the specified type `T`.
-    /// * `Err(DbgError)` - If the evaluation fails (e.g., invalid expression or type mismatch).
     ///
     /// # Example
     ///
@@ -261,11 +224,6 @@ impl Dbg {
     ///
     /// * `name` - The name of the symbol.
     ///
-    /// # Returns
-    ///
-    /// * `Ok(u64)` - The address of the symbol.
-    /// * `Err(DbgError)` - If the operation fails.
-    ///
     /// # Example
     ///
     /// ```rust ignore
@@ -284,11 +242,6 @@ impl Dbg {
     /// # Arguments
     ///
     /// * `addr` - The address to resolve to a symbol name.
-    ///
-    /// # Returns
-    ///
-    /// * `Ok(String)` - The resolved symbol name as a `String`.
-    /// * `Err(DbgError)` - If the operation fails (e.g., invalid address or debugger error).
     ///
     /// # Example
     ///
@@ -322,11 +275,6 @@ impl Dbg {
     /// * `module` - A `Module` that represents either:
     ///   - `u64`: The base address of the module.
     ///   - `&str`: The name of the module.
-    ///
-    /// # Returns
-    ///
-    /// * `Ok(())` - If the module was successfully removed.
-    /// * `Err(DbgError)` - If the removal fails.
     ///
     /// # Example
     ///
@@ -367,11 +315,6 @@ impl Dbg {
     /// * `vaddr` - The starting virtual address to read from.
     /// * `buffer` - A mutable slice where the read bytes will be stored.
     ///
-    /// # Returns
-    ///
-    /// * `Ok(usize)` - The number of bytes successfully read.
-    /// * `Err(DbgError)` - If the operation fails.
-    ///
     /// # Example
     ///
     /// ```rust,ignore
@@ -396,11 +339,6 @@ impl Dbg {
     /// * `size` - The size of the synthetic module in bytes.
     /// * `name` - The name of the synthetic module. It must implement `Into<String>`.
     /// * `path` - The file path of the synthetic module. It must be a valid `PathBuf`.
-    ///
-    /// # Returns
-    ///
-    /// * `Ok(())` - If the synthetic module is successfully added.
-    /// * `Err(DbgError)` - If any error occurs during the evaluation, path resolution, or name conversion.
     pub fn add_synthetic_module<S>(&self, expr: S, size: u32, name: S, path: PathBuf) -> Result<(), DbgError>
     where
         S: Into<String>,
@@ -435,11 +373,6 @@ impl Dbg {
     /// # Arguments
     ///
     /// * `vaddr` - The starting virtual memory address to read from.
-    ///
-    /// # Returns
-    ///
-    /// * `Ok(T)` - The value successfully read and interpreted as the specified type.
-    /// * `Err(DbgError)` - If the operation fails or the size of the type is invalid.
     pub fn read_type_vaddr<T: Copy>(&self, vaddr: u64) -> Result<T, DbgError> {
         // Determine the size of the target type `T`
         let size = size_of::<T>();
@@ -464,11 +397,6 @@ impl Dbg {
     /// # Arguments
     ///
     /// * `msr` - The identifier of the MSR to read (usually a 32-bit value corresponding to a specific register).
-    ///
-    /// # Returns
-    ///
-    /// * `Ok(u64)` - The value of the specified MSR if the operation is successful.
-    /// * `Err(DbgError)` - If the read operation fails.
     #[inline(always)]
     pub fn msr(&self, msr: u32) -> Result<u64, DbgError> {
         unsafe { Ok(self.dataspaces.ReadMsr(msr)?) }
@@ -479,12 +407,6 @@ impl Dbg {
     /// # Arguments
     ///
     /// * `addr` - The virtual memory address of the null-terminated string to read.
-    ///
-    /// # Returns
-    ///
-    /// * `Ok(String)` - The string read from the specified memory address, if successful.
-    /// * `Err(DbgError)` - If the operation fails due to issues such as an invalid memory address or
-    ///   a zero-sized string
     ///
     /// # Example
     ///
@@ -520,11 +442,6 @@ impl Dbg {
     /// * `names` - A slice of string references (`&[&str]`) representing the names
     ///   of the registers for which the indices need to be fetched.
     ///
-    /// # Returns
-    ///
-    /// * `Ok(Vec<u32>)` - A vector of register indices if all names are resolved successfully.
-    /// * `Err(DbgError)` - If any name fails to convert or resolve to an index.
-    ///
     /// # Example
     ///
     /// ```rust,ignore
@@ -546,12 +463,7 @@ impl Dbg {
     /// # Arguments
     ///
     /// * `indices` - A slice of register indices (`&[u32]`) for which the values need to be fetched.
-    ///
-    /// # Returns
-    ///
-    /// * `Ok(Vec<DEBUG_VALUE>)` - A vector of `DEBUG_VALUE` instances containing the values of the registers.
-    /// * `Err(DbgError)` - If the operation fails, such as when the indices are invalid or the API call fails.
-    ///
+    /// 
     /// # Example
     ///
     /// ```rust,ignore
@@ -579,10 +491,6 @@ pub trait DebugValue: Sized {
     /// # Arguments
     ///
     /// * `val` - A reference to the `DEBUG_VALUE` to be converted.
-    ///
-    /// # Returns
-    ///
-    /// * `Self` - If the conversion is successful.
     fn from_debug_value(val: &DEBUG_VALUE) -> Self;
 }
 
