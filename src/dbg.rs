@@ -1,9 +1,12 @@
-use crate::error::DbgError;
+// Copyright (c) 2025 joaoviictorti
+// Licensed under the MIT License. See LICENSE file in the project root for details.
+
 use std::{ffi::CString, path::PathBuf};
 use windows::{
     Win32::System::Diagnostics::Debug::Extensions::*,
     core::{IUnknown, Interface, PCSTR},
 };
+use crate::error::DbgError;
 
 /// Macro to send formatted messages to the debugger using [`Dbg::println`].
 ///
