@@ -3,9 +3,8 @@
 ![Rust](https://img.shields.io/badge/made%20with-Rust-red)
 ![crate](https://img.shields.io/crates/v/dbg-rs.svg)
 ![docs](https://docs.rs/dbg-rs/badge.svg)
-![Forks](https://img.shields.io/github/forks/joaoviictorti/dbg-rs)
-![Stars](https://img.shields.io/github/stars/joaoviictorti/dbg-rs)
-![License](https://img.shields.io/github/license/joaoviictorti/dbg-rs)
+![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-brightgreen)
+[![Actions status](https://github.com/joaoviictorti/dbg-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/joaoviictorti/dbg-rs/actions)
 
 Safe Rust bindings for the COM interfaces of the Windows debugging engine.
 
@@ -67,4 +66,14 @@ For more examples, check the [examples](/examples) folder in the repository.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](/LICENSE) file for details.
+dbg-rs is licensed under either of
+
+- Apache License, Version 2.0, ([LICENSE-APACHE](https://github.com/joaoviictorti/dbg-rs/tree/main/LICENSE-APACHE) or
+  <https://www.apache.org/licenses/LICENSE-2.0>)
+- MIT license ([LICENSE-MIT](https://github.com/joaoviictorti/dbg-rs/tree/main/LICENSE-MIT) or <https://opensource.org/licenses/MIT>)
+
+at your option.
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in dbg-rs
+by you, as defined in the Apache-2.0 license, shall be dually licensed as above, without any
+additional terms or conditions.

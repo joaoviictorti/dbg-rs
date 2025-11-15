@@ -1,6 +1,3 @@
-// Copyright (c) 2025 joaoviictorti
-// Licensed under the MIT License. See LICENSE file in the project root for details.
-
 use std::{ffi::CString, path::PathBuf};
 use windows::{
     Win32::System::Diagnostics::Debug::Extensions::*,
